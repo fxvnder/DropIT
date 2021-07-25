@@ -1,35 +1,40 @@
+#include "CubeCell_NeoPixel.h"
+CubeCell_NeoPixel pixels(1, RGB, NEO_GRB + NEO_KHZ800);
+
 #include "DHT.h"
 
-#define DHTPIN ADC     // what pin we're connected to
-#define DHTTYPE DHT22   // DHT 22  (AM2302)
-#define fan 4
+#define DHTPIN ADC
+#define DHTTYPE DHT22
 
 int maxHum = 60;
 int maxTemp = 40;
 
 DHT dht(DHTPIN, DHTTYPE);
 
+uint8_t i=0;
+
 void setup() {
-  pinMode(fan, OUTPUT);
+  pixels.begin();
+  pixels.setPixelColor(0, pixels.Color(i, i, i));
   Serial.begin(9600); 
   dht.begin();
 }
 
 void loop() {
-  // Wait a few seconds between measurements.
-  delay(2000);
+  delay(2000); // delay = 2 segundos
 
-  // Reading temperature or humidity takes about 250 milliseconds!
-  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
   float h = dht.readHumidity();
-  // Read temperature as Celsius
   float t = dht.readTemperature();
   
-  // Check if any reads failed and exit early (to try again).
   if (isnan(h) || isnan(t)) {
-    Serial.println("Failed to read from DHT sensor!");
+    pixels.setPixelColor(0, pixels.Color(i, 0, 0));
+    pixels.show();
+    Serial.println("-- ERRO A LER O DHT! --");
     return;
   }
+
+  pixels.setPixelColor(0, pixels.Color(0, i, 0));
+  pixels.show();
   
   Serial.print("HUMIDADE: "); 
   Serial.print(h);

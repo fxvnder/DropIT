@@ -1,32 +1,38 @@
+#include "CubeCell_NeoPixel.h"
+CubeCell_NeoPixel pixels(1, RGB, NEO_GRB + NEO_KHZ800);
 
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-const int dry = 1230; //value for dry sensor
-const int wet = 760; //value for dry sensor
+const int dry = 1230;
+const int wet = 760;
+
+uint8_t i=0;
 
 void setup() {
-  // setup code
-
+  pixels.begin();
+  pixels.setPixelColor(0, pixels.Color(i, i, i));
   Serial.begin(9600);
 }
 
 void loop() {
-  // main code
-  // Serial.println(analogRead(ADC)); //directly extract the reciven value
   int sensorVal = analogRead(ADC);
-
-  // More info: https://www.arduino.cc/reference/en/language/functions/math/map/
   int percentageHumidity = map(sensorVal, wet, dry, 100, 0);
 
+  
+  pixels.setPixelColor(0, pixels.Color(0, i, 0));
   Serial.print("\n");
   Serial.print(percentageHumidity);
-  Serial.print("% HÚMIDO");
+  Serial.print("% HUMIDADE");
 
   if(percentageHumidity >= 50){
+    pixels.setPixelColor(0, pixels.Color(0, 0, i));
     Serial.print(" - Molhado");
-  } else Serial.print(" - Seco");
+  } else {
+    pixels.setPixelColor(0, pixels.Color(i, i, i));
+    Serial.print(" - Seco");
+  }
   
-  delay(500);
+  delay(2000); // 2 segs
 }
