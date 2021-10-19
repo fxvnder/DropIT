@@ -36,15 +36,19 @@ void setup() {
 void loop() {
   debugSerial.println("-- LOOP");
 
-  int sensorVal = analogRead(A0);
-  int wet = 190, dry = 530;// (~ dry: 515, wet: 190)
+  int moistSensorVal = analogRead(A0);
+  int wet = 190, dry = 530; // (~ dry: 515, wet: 190)
   Serial.println("Moist sensor readings mapped from 0 to 255: (dry: 0, wet: 255)");
-  int mapped_onebyte = map(sensorVal, wet, dry, 254, 0);
-  Serial.println(mapped_onebyte);
+  int moistness_mapped = map(moistSensorVal, wet, dry, 255, 0); // map to take only one byte
+  Serial.println(moistness_mapped);
 
   // Prepare the data for sending
-  byte data[1];
-  data[0] = (byte)mapped_onebyte;
+  int dht_temprature = 90;
+  int dht_humidity = 80;
+  byte data[3];
+  data[0] = (byte)moistness_mapped;
+  data[1] = (byte)dht_temprature;
+  data[2] = (byte)dht_humidity;
     
   // Send it off
   ttn.sendBytes(data, sizeof(data));

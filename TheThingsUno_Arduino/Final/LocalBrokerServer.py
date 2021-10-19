@@ -20,12 +20,9 @@ def email_alert(subject, body, to):
 
     server.quit()
 
-def sendNotify():
-    print("yay")
-
+index = 0
 while True:
     m = subscribe.simple(topics=['#'], hostname="eu1.cloud.thethings.network", port=1883, auth={'username':"fikadropit",'password':"NNSXS.XAUNAJ73KL6OQMVNMV4JQZYHTHNUBP47Z3MUVBY.N5CUF5SSXDCT6C4YHYR5TG46PBVSINT5EGFOWSWJLNEXP4JCFLAQ"}, msg_count=2)
-    index = 0
     for a in m:
         print(a.topic)
         #print("-----------------------------------") #separator
@@ -44,15 +41,38 @@ while True:
         '''
         extractedValuestr = ""
         for element in bananasplit:
-            if "decoded_payload" in element:
-                # print(element) 
+            if "moistsensor" in element:
                 for ch in element:
                     if ch.isdigit():
                         extractedValuestr += ch
         extractedValue = int(extractedValuestr)
-        print(extractedValue)
         if extractedValue > 130:
+            print("moist value: " + extractedValuestr + ", above 130! Email sent")
             index += 1
             subject = "Mosit Warning! - "
             subject += str(index)
-            email_alert(subject, "The wetness level is above 130!", "yesheysangpo@gmail.com") # instead of my email ("yesheysangpo@gmail.com"), my number 
+
+            corpse = "The wetness level is "
+            corpse += str(extractedValue)
+            corpse += " (0 to 255), it's above 130!"
+            email_alert(subject, corpse, "yesheysangpo@gmail.com") # instead of my email ("yesheysangpo@gmail.com"), my number 
+        else:
+            print("moist value: " + extractedValuestr)
+
+        # DHT temperature
+        extractedValuestr = ""
+        for element in bananasplit:
+            if "dhttemperature" in element:
+                for ch in element:
+                    if ch.isdigit():
+                        extractedValuestr += ch
+        print("dht temperature: " + extractedValuestr)
+
+        # DHT humidity
+        extractedValuestr = ""
+        for element in bananasplit:
+            if "dhthumidity" in element:
+                for ch in element:
+                    if ch.isdigit():
+                        extractedValuestr += ch
+        print("dht humidity: " + extractedValuestr)
