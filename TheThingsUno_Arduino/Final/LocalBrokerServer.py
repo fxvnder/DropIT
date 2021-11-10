@@ -97,4 +97,4 @@ while True:
         dht_hum = dht_hum_int + (dht_hum_deci/100)
 
         print("DHT22: ")
-        print("Humidity: " + str(dht_hum) + " % \t Temperature: " + str(dht_temp) + " *C") 
+        print("Humidity: " + str(round(dht_hum,1)) + " % \t Temperature: " + str(round(dht_hum,1)) + " *C") 
